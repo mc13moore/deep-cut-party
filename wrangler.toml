@@ -1,0 +1,13 @@
+name = "deep-cut-party"
+pages_build_output_dir = "./public"
+compatibility_date = "2025-01-01"
+
+[vars]
+# Change this before deploying. You'll type it on the scoreboard to unlock host controls.
+HOST_PIN = "1234"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "deep-cut-party"
+# Paste the database_id printed by `npx wrangler d1 create deep-cut-party` here:
+database_id = "PASTE-DATABASE-ID-HERE"

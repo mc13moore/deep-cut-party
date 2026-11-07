@@ -1,0 +1,6 @@
+{
+  "name": "deep-cut-party",
+  "private": true,
+  "scripts": { "deploy": "wrangler pages deploy", "dev": "wrangler pages dev" },
+  "devDependencies": { "wrangler": "^3.90.0" }
+}
