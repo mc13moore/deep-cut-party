@@ -4,8 +4,8 @@
 //   GET  /api/scores?board=live|test   -> { entries, names }      (anyone: scoreboard)
 //   POST /api/scores                    -> save a player's card    (anyone: automatic from the game)
 //   GET  /api/host/check                -> verify host PIN
-//   GET  /api/state                     -> { round2Open }
-//   POST /api/host/entry | delete | reset | names | round2         (host PIN required)
+//   GET  /api/state                     -> { round2Open, answersOpen }
+//   POST /api/host/entry | delete | reset | names | round2 | answers   (host PIN required)
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS scores (
@@ -44,10 +44,11 @@ async function handleApi(request, env, path) {
   const boardIn = body.board || url.searchParams.get("board");
   const board = BOARDS.includes(boardIn) ? boardIn : null;
 
-  // ----- Public: game state (is Round 2 open?) -----
+  // ----- Public: game state (is Round 2 open? are party answers revealed?) -----
   if (path === "state" && method === "GET") {
-    const s = await db.prepare("SELECT v FROM settings WHERE k = 'round2open'").first();
-    return json({ round2Open: !!(s && s.v === "1") });
+    const { results } = await db.prepare("SELECT k, v FROM settings WHERE k IN ('round2open', 'answersopen')").all();
+    const on = (k) => results.some((r) => r.k === k && r.v === "1");
+    return json({ round2Open: on("round2open"), answersOpen: on("answersopen") });
   }
 
   // ----- Public: read a board -----
@@ -85,11 +86,13 @@ async function handleApi(request, env, path) {
     if (action === "check") return json({ ok: true });
     if (method !== "POST") return json({ error: "Bad request" }, 400);
 
-    if (action === "round2") {
-      const open = !!body.open;
-      await db.prepare("INSERT INTO settings (k, v) VALUES ('round2open', ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v")
-        .bind(open ? "1" : "0").run();
-      return json({ ok: true, round2Open: open });
+    // Party switches: open Round 2, reveal the party answers.
+    const FLAGS = { round2: ["round2open", "round2Open"], answers: ["answersopen", "answersOpen"] };
+    if (FLAGS[action]) {
+      const [k, out] = FLAGS[action], open = !!body.open;
+      await db.prepare("INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v")
+        .bind(k, open ? "1" : "0").run();
+      return json({ ok: true, [out]: open });
     }
     if (!board) return json({ error: "Bad request" }, 400);
 

@@ -601,11 +601,12 @@ function finishPrompt(m,val){
     ${badge}
     <div class="pts" style="color:${m?`var(--${m.tier})`:"var(--mute)"}">+${pts}</div>
     <div class="yours">${m?`You said <b style="color:var(--ink)">${esc(m.label)}</b>`:"&nbsp;"}</div>
+    ${hideAnswers(G.mode)?`<div class="card reveal-list tmeta" style="text-align:center">🤫 The gem and top answers stay hidden until the host reveals them. No spoilers!</div>`:`
     <div class="card reveal-list">
       <div class="row" style="border-top:none"><span>The gem</span><span class="gem">💎 ${esc(gem.label)}</span></div>
       <div class="row"><span>Everyone says</span><span>${commons.map(esc).join(", ")}</span></div>
       ${rares.length?`<div class="row"><span>Rare picks</span><span>${rares.map(esc).join(", ")}</span></div>`:""}
-    </div>
+    </div>`}
     <button class="btn wide" id="next">${last?(G.mode==="versus"&&G.p===0?"Hand it over →":"See results"):"Next prompt →"}</button>
   </div>`;
   document.getElementById("next").onclick=next;
@@ -743,8 +744,10 @@ function partyPill(){
   const P=partyState(); const done=[1,2].filter(r=>P["r"+r]).length;
   return done===0?"2 rounds":done===PARTY_ROUNDS?`done · ${partyTotal(P)} pts`:`R1 done · ${partyTotal(P)} pts`;
 }
-let round2Open=false, hubPollT=0;
-async function fetchRound2(){ try{const s=await api("/state"); round2Open=!!s.round2Open;}catch(e){} return round2Open; }
+let round2Open=false, answersOpen=false, hubPollT=0;
+async function fetchState(){ try{const s=await api("/state"); round2Open=!!s.round2Open; answersOpen=!!s.answersOpen;}catch(e){} return round2Open; }
+// Everyone plays the same party prompts, so answers stay hidden until the host reveals them.
+const hideAnswers=mode=>mode==="party"&&!answersOpen;
 
 function partyJoin(test){
   if(!test){ const P=partyState(); if(P.name) return partyHub(); }
@@ -808,7 +811,7 @@ function partyHub(){
     ${roundRow(2,r2,r2Locked)}
     ${!r1?`<div class="tmeta" style="margin-top:8px">Finish Round 1 first.</div>`:(!r2&&!round2Open)?`<div class="tmeta" style="margin-top:8px">This page checks automatically, so you can leave it open.</div>`:""}
   </div>
-  ${r1&&r2?`<p class="sub" style="text-align:center">🎉 You're done! Watch the scoreboard to see where your team lands.</p>`:""}
+  ${r1&&r2?`<p class="sub" style="text-align:center">🎉 You're done! Watch the scoreboard to see where your team lands.${answersOpen?" Answers are out: tap a round to see the gems.":""}</p>`:""}
   <button class="linkbtn" id="other" style="display:block;margin:10px auto 0;font-size:14px">Someone else playing on this phone?</button>`;
   document.getElementById("quit").onclick=()=>{clearTimeout(hubPollT);home();};
   document.getElementById("other").onclick=()=>{clearTimeout(hubPollT);savePartyState({});store.set("deepcut-party-done",null);partyJoin(false);};
@@ -819,9 +822,10 @@ function partyHub(){
   app.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{clearTimeout(hubPollT);partyCard(P["r"+b.dataset.view],false);});
   // Re-send any card that hasn't reached the scoreboard yet.
   for(const n of [1,2]) if(P["r"+n]&&!P["r"+n].sent) sendCard(P["r"+n],false,true);
-  // While Round 2 is locked, keep checking whether the host has opened it.
-  if(r1&&!r2&&!round2Open){
-    const tick=async()=>{ if(await fetchRound2()) { partyHub(); return; } hubPollT=setTimeout(tick,5000); };
+  // Keep checking for the host opening Round 2 or revealing the answers.
+  if((r1&&!r2&&!round2Open)||!answersOpen){
+    const was=round2Open+":"+answersOpen;
+    const tick=async()=>{ await fetchState(); if(round2Open+":"+answersOpen!==was) return partyHub(); hubPollT=setTimeout(tick,5000); };
     hubPollT=setTimeout(tick,1500);
   }
 }
@@ -842,7 +846,7 @@ function partyCard(c,test){
     ${P&&P.r1&&P.r2?`<div class="sub" style="margin:10px 0 0">Total for both rounds: <b style="color:var(--ink)">${partyTotal(P)}</b></div>`:""}
   </div>
   <div class="sendstat wait" id="sendstat">&nbsp;</div>
-  <div class="card">${(c.rows||[]).map(r=>`<div class="res-row"><div class="rq">${esc(BANK[r.pi].q)} · 💎 ${esc(gemOf(r.pi).label)}</div><div>${r.label?esc(r.label):`<span style="color:var(--mute)">—</span>`}</div><div>${r.tier?`<span class="badge ${TIERS[r.tier].cls}">+${TIERS[r.tier].pts}</span>`:`<span class="badge b-x">0</span>`}</div></div>`).join("")}</div>
+  <div class="card">${(c.rows||[]).map(r=>`<div class="res-row"><div class="rq">${esc(BANK[r.pi].q)}${hideAnswers(test?"test":"party")?"":` · 💎 ${esc(gemOf(r.pi).label)}`}</div><div>${r.label?esc(r.label):`<span style="color:var(--mute)">—</span>`}</div><div>${r.tier?`<span class="badge ${TIERS[r.tier].cls}">+${TIERS[r.tier].pts}</span>`:`<span class="badge b-x">0</span>`}</div></div>`).join("")}</div>
   ${test?`<button class="btn wide" id="again">Play another test run</button>`
         :`<button class="btn wide" id="hub">${(c.round||1)===1&&!(P&&P.r2)?"Back to party · Round 2 next":"Back to party"}</button>`}
   <button class="btn ghost wide" id="endless">Keep playing: Endless (just for fun)</button>`;
@@ -934,13 +938,13 @@ function renderBoard(){
   }
   poll();
 }
-let lastR2=null;
+let lastState="";
 async function poll(){
   clearTimeout(pollT);
   if(!onBoard()) return;
   const mode=boardMode;
   try{
-    const [d]=await Promise.all([api("/scores?board="+mode), mode==="live"?fetchRound2().then(o=>{ if(o!==lastR2){ lastR2=o; if(hostOn) paintHost(); } }):null]);
+    const [d]=await Promise.all([api("/scores?board="+mode), mode==="live"?fetchState().then(()=>{ const k=round2Open+":"+answersOpen; if(k!==lastState){ lastState=k; if(hostOn) paintHost(); } }):null]);
     if(mode!==boardMode||!onBoard()) return;
     bdState="ok";
     const k=JSON.stringify(d);
@@ -1030,6 +1034,12 @@ function paintHost(){
       <div><b>Round 2 is ${round2Open?"OPEN":"locked"}</b><div class="tmeta" style="margin-top:3px">${round2Open?"Players can start Round 2 now.":"Players who finish Round 1 wait until you open it."}</div></div>
       <button class="btn ${round2Open?"ghost":""}" id="r2btn">${round2Open?"Lock again":"Open Round 2"}</button>
     </div>
+  </div>
+  <div class="card r2card ${answersOpen?"open":""}">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div><b>Answers are ${answersOpen?"REVEALED":"hidden"}</b><div class="tmeta" style="margin-top:3px">${answersOpen?"Players can see the gems and top answers.":"Players don't see the gems or top answers, so nobody can spoil them. Reveal when everyone's done."}</div></div>
+      <button class="btn ${answersOpen?"ghost":""}" id="ansbtn">${answersOpen?"Hide again":"Reveal answers"}</button>
+    </div>
   </div>`:""}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -1062,6 +1072,12 @@ function paintHost(){
         toast(round2Open?"Round 2 is open!":"Round 2 locked", round2Open?"var(--u)":"var(--mute)");}
     catch(e){toast(e.message,"var(--bad)");}
   };
+  const ab=document.getElementById("ansbtn");
+  if(ab) ab.onclick=async()=>{
+    try{const d=await api("/host/answers",{method:"POST",host:true,body:{open:!answersOpen}}); answersOpen=!!d.answersOpen; paintHost();
+        toast(answersOpen?"Answers revealed!":"Answers hidden", answersOpen?"var(--u)":"var(--mute)");}
+    catch(e){toast(e.message,"var(--bad)");}
+  };
   document.getElementById("lock").onclick=()=>{store.set("deepcut-pin",null);hostOn=false;paintHost();};
   document.getElementById("ren").onclick=()=>{renaming=!renaming;paintRename();document.getElementById("ren").textContent=renaming?"Cancel":"Rename";};
   document.getElementById("addf").onsubmit=async e=>{
@@ -1082,7 +1098,9 @@ function paintHost(){
   document.getElementById("reset").onclick=async()=>{
     if(!resetArmed){resetArmed=true;paintReset();return;}
     try{await api("/host/reset",{method:"POST",host:true,body:{board:boardMode}});
-        if(boardMode==="live"){const d=await api("/host/round2",{method:"POST",host:true,body:{open:false}}); round2Open=!!d.round2Open; paintHost();}}
+        if(boardMode==="live"){
+          round2Open=!!(await api("/host/round2",{method:"POST",host:true,body:{open:false}})).round2Open;
+          answersOpen=!!(await api("/host/answers",{method:"POST",host:true,body:{open:false}})).answersOpen; paintHost();}}
     catch(e){toast(e.message,"var(--bad)");}
     resetArmed=false; paintReset(); poll();
   };
@@ -1138,7 +1156,7 @@ function route(){
 window.addEventListener("hashchange",route);
 route();
 flushPending();
-fetchRound2();
+fetchState();
 </script>
 </body>
 </html>

@@ -38,6 +38,7 @@ At the end it prints your link, something like `https://deep-cut-party.<you>.wor
 - **Test runs:** on the home screen, tap **🧪 Test run** and pick Run 1–3. Scores go to the **Test** tab of the scoreboard, and test runs never use the real party prompts. Clear the test board when you're done, then switch the scoreboard back to **Live party**.
 - **Real game:** guests tap **🎂 Birthday party game**, pick a team and enter their name. They get one try at each round, and each round's score posts to the Live board when they finish.
 - **Round 2:** stays locked until you tap **Open Round 2** in the host controls. Players waiting on Round 2 see it unlock by themselves. Resetting the live board locks Round 2 again.
+- **Answers stay hidden:** during the party, players don't see the gem or top answers after each prompt, so nobody can spoil them for people still playing. When everyone's done, tap **Reveal answers** in the host controls. Resetting the live board hides them again.
 - **Someone opened the real round by accident while testing?** On that phone, open `https://<your-link>/#unlock-party`.
 - **If a phone has no signal when it finishes,** the card shows **Try again**. It also re-sends by itself the next time the page opens.
 
