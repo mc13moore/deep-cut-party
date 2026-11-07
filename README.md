@@ -8,7 +8,7 @@ The game plus a live team scoreboard. Every player's score is sent to the scoreb
 
 ## Deploy (about 10 minutes)
 
-Unzip this folder, open a terminal in it, and run:
+Clone this repo, open a terminal in it, and run:
 
 **1. Log in to Cloudflare** (opens your browser)
 ```
@@ -24,12 +24,11 @@ It prints a `database_id`. Open `wrangler.toml` and paste that id in place of `P
 **3. Set your host PIN**
 In `wrangler.toml`, change `HOST_PIN = "1234"` to your own PIN. It unlocks the scoreboard's host controls.
 
-**4. Create the site and deploy**
+**4. Deploy**
 ```
-npx wrangler pages project create deep-cut-party --production-branch main
-npx wrangler pages deploy
+npx wrangler deploy
 ```
-At the end it prints your link, something like `https://deep-cut-party.pages.dev`. Send that to the group.
+At the end it prints your link, something like `https://deep-cut-party.<you>.workers.dev`. Send that to the group.
 
 (The tables are created by themselves on first use. There's nothing else to set up.)
 
@@ -37,9 +36,10 @@ At the end it prints your link, something like `https://deep-cut-party.pages.dev
 - **Scoreboard:** open `https://<your-link>/#scoreboard` on a TV or laptop. It updates every few seconds as people finish.
 - **Host controls:** on the scoreboard, enter your PIN to fix or remove entries, add a score by hand, rename teams, or reset.
 - **Test runs:** on the home screen, tap **🧪 Test run** and pick Run 1–3. Scores go to the **Test** tab of the scoreboard, and test runs never use the real party prompts. Clear the test board when you're done, then switch the scoreboard back to **Live party**.
-- **Real round:** guests tap **🎂 Birthday party round**. They get one try per name per phone, and their score posts to the Live board when they finish.
+- **Real game:** guests tap **🎂 Birthday party game**, pick a team and enter their name. They get one try at each round, and each round's score posts to the Live board when they finish.
+- **Round 2:** stays locked until you tap **Open Round 2** in the host controls. Players waiting on Round 2 see it unlock by themselves. Resetting the live board locks Round 2 again.
 - **Someone opened the real round by accident while testing?** On that phone, open `https://<your-link>/#unlock-party`.
 - **If a phone has no signal when it finishes,** the card shows **Try again**. It also re-sends by itself the next time the page opens.
 
 ## Changing things later
-Edit `public/index.html` (prompts are in `BANK` near the top), then run `npx wrangler pages deploy` again.
+Edit `public/index.html` (prompts are in `BANK` near the top), then run `npx wrangler deploy` again. Prompts 1–28 feed Round 1, test runs and warm-ups; the last 7 are the Round 2 set.

@@ -102,6 +102,14 @@ input[type=text]:focus{border-color:var(--accent)}
 .entry{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
 .x{background:none;border:none;color:var(--mute);cursor:pointer;font-size:14px;margin-left:8px;padding:4px}
 .x:hover{color:var(--bad)}
+.roundrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.roundrow:first-child{border-top:none}
+.roundrow .rl{font-weight:700;font-size:17px}
+.roundrow .rs{color:var(--mute);font-size:14px;margin-top:3px}
+.btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+.rsplit{font-size:12px;color:var(--mute);white-space:nowrap}
+.r2card{border-color:#4a4459}
+.r2card.open{border-color:rgba(60,198,180,.6);background:color-mix(in srgb,var(--u) 8%,var(--panel))}
 .sendstat{margin:14px 0;padding:12px 14px;border-radius:14px;font-size:15px;text-align:center;border:1px solid var(--line);background:var(--panel)}
 .sendstat.ok{border-color:rgba(60,198,180,.5);color:var(--u)}
 .sendstat.ok b{color:var(--ink)}
@@ -265,6 +273,42 @@ const BANK = [
  u:"jaw|rib|gum|gut|lid",
  r:"pec|abs|bum|tum|shin|vas",
  g:"lap"},
+/* ---- Round 2 prompts (birthday party only; never used in test runs or warm-ups) ---- */
+{q:"A US state capital",
+ c:"austin|boston|denver|atlanta|phoenix|nashville|sacramento|honolulu",
+ u:"albany|tallahassee|salt lake city|olympia|harrisburg|columbus|indianapolis|richmond|raleigh|boise|santa fe|saint paul/st paul|juneau|providence|hartford|trenton|lansing|madison|baton rouge|oklahoma city|little rock|carson city|cheyenne|annapolis|frankfort|springfield",
+ r:"bismarck|montpelier|augusta|concord|dover|helena|topeka|lincoln|des moines|jefferson city|jackson|montgomery|columbia|charleston",
+ g:"pierre"},
+{q:"A type of tree",
+ c:"oak|pine|maple|palm|apple|birch|willow|redwood",
+ u:"cherry|elm|cedar|spruce|fir|aspen|ash|sequoia|magnolia|dogwood|cypress|sycamore|poplar|hickory|walnut|beech|eucalyptus|lemon|orange|banyan|baobab|juniper|hemlock|olive|peach|pear|chestnut|holly|mahogany|teak|joshua tree|christmas tree|douglas fir|weeping willow|palm tree",
+ r:"ginkgo|sassafras|catalpa|tupelo|sweetgum|linden/basswood|hornbeam|alder|rowan/mountain ash|yew|buckeye|horse chestnut|mimosa|jacaranda|acacia|mangrove|kapok|dragon blood tree|bristlecone pine|ironwood|ebony|rosewood|sandalwood|cork oak|osage orange|black locust|honey locust|persimmon|pawpaw|tamarack|larch|sumac|tamarind|neem|frangipani/plumeria|live oak|bur oak|crepe myrtle|smoke tree|paulownia/empress tree|katsura|silver birch|cottonwood|box elder|mesquite|palo verde|cherry blossom|bonsai|banksia|kauri|wollemi pine|baldcypress/bald cypress|loblolly pine|white pine|ponderosa pine|lodgepole pine|blue spruce|balsam fir|black walnut|pecan|almond|fig|avocado|mango|coconut|date palm|lime|plum|apricot|nectarine|crabapple|hawthorn|serviceberry|redbud|witch hazel|beech|hophornbeam|ohia|koa|monkeypod",
+ g:"monkey puzzle/monkey puzzle tree"},
+{q:"A pizza topping",
+ c:"pepperoni|sausage|mushrooms|cheese|onions|olives/black olives|peppers/bell peppers/green peppers|pineapple|ham|bacon",
+ u:"jalapenos|spinach|chicken|tomatoes|basil|garlic|anchovies|meatball/meatballs|ground beef/beef|artichoke/artichokes|ricotta|feta|banana peppers|red onion|bbq chicken|buffalo chicken|prosciutto|arugula|pesto|hot honey|extra cheese|sun-dried tomatoes|mozzarella|green olives|canadian bacon|italian sausage|chili flakes/red pepper flakes",
+ r:"capers|egg|potato|corn|figs|goat cheese|gorgonzola|pear|truffle|soppressata|nduja|salami|capicola|pancetta|shrimp|broccoli|broccoli rabe|kale|eggplant|zucchini|roasted red peppers|pickles|mac and cheese|taco meat|kimchi|smoked salmon|caviar|mortadella|pistachio|burrata|calabrian chili|hot dog|fries|tuna|chorizo|guanciale|sardines|giardiniera|cherry peppers|pepperoncini|sweet corn|pulled pork|brisket|steak|philly cheesesteak|gyro|lamb|duck|crab|lobster|scallops|squid/calamari|octopus|avocado|cauliflower|butternut squash|sweet potato|brussels sprouts|leeks|fennel|asparagus|walnuts|pine nuts|honey|ranch|bbq sauce|buffalo sauce|alfredo|vodka sauce|white sauce|cotija|parmesan|provolone|fontina|brie|blue cheese|cheddar|pickled onions|chives|scallions|cilantro|oregano|arugula",
+ g:"clams"},
+{q:"A sitcom",
+ c:"friends|the office|seinfeld|how i met your mother|the big bang theory/big bang theory|parks and recreation/parks and rec|modern family|brooklyn nine-nine/brooklyn 99",
+ u:"cheers|frasier|arrested development|curb your enthusiasm|it's always sunny in philadelphia/always sunny/it's always sunny|new girl|scrubs|community|schitt's creek|abbott elementary|30 rock|two and a half men|full house|family matters|the fresh prince of bel-air/fresh prince|everybody loves raymond|that '70s show/that 70s show|the golden girls/golden girls|i love lucy|ted lasso|superstore|the good place|malcolm in the middle|boy meets world|the king of queens/king of queens|home improvement|married with children|the jeffersons|happy days|m*a*s*h/mash|veep|the simpsons|what we do in the shadows|ghosts|the middle|the goldbergs|young sheldon|black-ish/blackish|will and grace/will & grace|the nanny|saved by the bell|martin|living single|the cosby show|family guy",
+ r:"taxi|barney miller|wkrp in cincinnati|spaced|peep show|fawlty towers|the it crowd|father ted|black books|the inbetweeners|derry girls|fleabag|atlanta|insecure|girls|broad city|the larry sanders show|3rd rock from the sun|mad about you|wings|night court|sanford and son|all in the family|the honeymooners|gilligan's island|the dick van dyke show|the mary tyler moore show|newhart|the bob newhart show|perfect strangers|alf|mork and mindy|laverne and shirley|the munsters|the addams family|bewitched|i dream of jeannie|green acres|the beverly hillbillies|my name is earl|reno 911|party down|enlightened|review|nathan for you|detroiters|reservation dogs|hacks|kim's convenience|letterkenny|corner gas|trailer park boys|happy endings|don't trust the b in apartment 23|cougar town|suburgatory|fresh off the boat|everybody hates chris|my wife and kids|the bernie mac show|sister sister|moesha|girlfriends|the parkers|a different world|227|amen|good times|what's happening|diff'rent strokes|the facts of life|who's the boss|growing pains|family ties|step by step|sabrina the teenage witch|blossom|spin city|just shoot me|the drew carey show|ellen|dharma and greg|yes dear|according to jim|still standing|rules of engagement|mike and molly|2 broke girls|mom|last man standing|the league|silicon valley|man seeking woman|the last man on earth|great news|bob hearts abishola|the neighborhood|one day at a time|the comeback|extras|the office uk|gavin and stacey|only fools and horses|blackadder|the young ones|red dwarf|the vicar of dibley|keeping up appearances|absolutely fabulous|the thick of it|i'm alan partridge|toast of london|the good life|dad's army|are you being served|yes minister|car share|catastrophe|schitts creek|kenan and kel|step by step",
+ g:"newsradio/news radio"},
+{q:"A dessert",
+ c:"cake|ice cream|pie|cookies/cookie|brownies/brownie|cheesecake|cupcake|donut/doughnut|pudding",
+ u:"tiramisu|creme brulee|mousse/chocolate mousse|cobbler|apple pie|banana split|sundae|macaron/macarons|eclair|cannoli|churros|flan|panna cotta|gelato|sorbet|baklava|key lime pie|pecan pie|pumpkin pie|carrot cake|red velvet cake|lava cake|s'mores/smores|fudge|rice pudding|bread pudding|trifle|parfait|crepes|strawberry shortcake|blondies|banana pudding|milkshake|popsicle|jello|frozen yogurt/froyo|funnel cake|cinnamon roll|angel food cake|pound cake|chocolate chip cookies",
+ r:"pavlova|baked alaska|profiteroles|mille-feuille/napoleon|sticky toffee pudding|eton mess|gulab jamun|mochi|halo-halo|tres leches|alfajores|brigadeiro|kulfi|rasmalai|jalebi|knafeh/kunafa|basbousa|galaktoboureko|loukoumades|sfogliatella|zeppole|semifreddo|affogato|zabaglione|cassata|struffoli|pastel de nata|beignet|kouign-amann|clafoutis|tarte tatin|madeleine|financier|opera cake|black forest cake|sachertorte|linzer torte|strudel/apple strudel|kaiserschmarrn|rugelach|babka|hamantaschen|sufganiyot|bananas foster|cherries jubilee|whoopie pie|moon pie|grasshopper pie|shoofly pie|chess pie|buckeyes|rocky road|snickerdoodle|biscotti|panettone|bingsu|dango|taiyaki|daifuku|egg tart|mango sticky rice|cendol|kheer|gajar halwa|mooncake|queen of puddings|spotted dick|figgy pudding|christmas pudding|treacle tart|bakewell tart|banoffee pie|crumble|crisp|buckle|grunt|slump|sonker|kolache|sopapilla|arroz con leche|cajeta|chocotorta|bolo de rolo|kanafeh|halva|turkish delight|marzipan|nanaimo bars|butter tart|lamingtons|tim tams|fairy bread|vinegar pie|hummingbird cake|lane cake|doberge cake|king cake|gooey butter cake|tomato soup cake",
+ g:"pandowdy"},
+{q:"Something you'd see at a birthday party",
+ c:"cake|balloons|candles|presents/gifts/present|ice cream|party hats/party hat|streamers|cupcakes|confetti",
+ u:"pinata|banner|birthday card/cards|games|music|pizza|friends|decorations|goody bags/party favors/favors|wrapping paper|noisemakers/party blowers/blowers|sparklers|photo booth|dj|karaoke|champagne|punch|chips|cake knife|plates|napkins|candy|gift bags|birthday song/happy birthday/happy birthday song|surprise|balloon arch",
+ r:"bounce house|clown|magician|face painting|pin the tail on the donkey|musical chairs|cake topper|number candles|birthday crown|tiara|sash|thank you cards|forks|guest book|slideshow|roast|toast|speech|dance floor|fog machine|disco ball|polaroid camera/polaroid|tablecloth|centerpieces|ribbon|tissue paper|bows|glitter|cake smash|cake pops|sheet cake|ice cream cake|party poppers|kazoo|helium tank|banner letters|candle smoke|cake candles|lighter|matches|frosting|sprinkles|cake stand|mylar balloons|balloon animals|piñata stick/pinata stick|blindfold|scavenger hunt|treasure hunt|party bus|limo|bar cart|shots|jello shots|mocktails|cocktails|charcuterie|veggie tray|fruit tray|mini sliders|chicken wings|tacos|sushi|ice bucket|cooler|playlist|speaker|string lights|fairy lights|photo backdrop|selfie stick|birthday sign|yard sign|candy bar|dessert table|cookie cake|donut wall|crepe paper",
+ g:"trick candles/relighting candles/relighting candle/trick candle"},
+{q:"A word that starts with Q",
+ c:"queen|quiet|quick|question|quilt|quarter|quiz",
+ u:"quack|quail|quality|quantity|quarrel|quest|queue|quote|quit|quite|quinoa|quartz|quesadilla|query|quench|quirky|quill|quiver|quotient|quadrant|quarantine|quicksand|quarterback|queso|quiche|quote|quad|quaker|quarry",
+ r:"quagmire|quaint|qualm|quandary|quash|quasar|quaver|quay|queasy|quell|querulous|quibble|quiescent|quintessential|quintet|quip|quirk|quixotic|quorum|quota|quetzal|quince|quadruple|quintuplets|quarto|quaff|quahog|quadratic|quantum|quark|quinine|quadriceps/quads|quadrilateral|quadrillion|quintillion|quarterly|quartet|quatrain|queenly|queer|quicken|quicksilver|quickstep|quiddity|quidditch|quietus|quilting|quince|quinceanera|quintal|quipster|quisling|quitter|quivering|quizzical|quoit|quondam|quorum|qwerty|quaalude|quack grass|quagga|qualify|qualifier|quantify|quarantined|quarterdeck|quartermaster|quash|quean|quelea|quenelle|quiet|quietude",
+ g:"quokka"},
 ];
 
 /* ---------- Helpers ---------- */
@@ -281,6 +325,8 @@ const TEAMS = [
   {n:"Team 4",col:"#51cf66",e:"🟢"},{n:"Team 5",col:"#4dabf7",e:"🔵"},{n:"Team 6",col:"#b197fc",e:"🟣"},
 ];
 const TEAM_SIZE = 5;
+const BASE_PROMPTS = 28; // prompts before the Round 2 block; keeps Round 1 and test runs unchanged
+const PARTY_ROUNDS = 2;
 
 function norm(s){
   s = (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
@@ -345,13 +391,14 @@ function dailyPrompts(){
 function partyPrompts(){
   // Fixed set: identical for every guest, on every device, all night.
   let h=2166136261; for(const ch of "deepcut-birthday-party"){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}
-  const r=mulberry32(h>>>0); const idx=BANK.map((_,i)=>i);
+  const r=mulberry32(h>>>0); const idx=Array.from({length:BASE_PROMPTS},(_,i)=>i);
   for(let i=idx.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
   return idx.slice(0,ROUND);
 }
 // The party set is walled off: warm-ups and test runs only ever draw from POOL.
-const PARTY = partyPrompts();
-const POOL = BANK.map((_,i)=>i).filter(i=>!PARTY.includes(i));
+const PARTY = partyPrompts();                      // Round 1
+const PARTY_R2 = Array.from({length:BANK.length-BASE_PROMPTS},(_,i)=>BASE_PROMPTS+i).slice(0,ROUND); // Round 2
+const POOL = Array.from({length:BASE_PROMPTS},(_,i)=>i).filter(i=>!PARTY.includes(i));
 const TEST_RUNS = Math.floor(POOL.length/ROUND); // 3 non-overlapping test sets
 function testPrompts(run){
   let h=2166136261; for(const ch of "deepcut-test-runs"){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}
@@ -390,8 +437,8 @@ function home(){
   <p class="sub">Everyone knows the hits. Name the B-side. Obvious answers score a little, obscure ones score a lot, and every prompt hides one 💎 gem.</p>
 
   <button class="card mode party" data-m="party">
-    <div class="t">🎂 Birthday party round <span class="pill">${store.get("deepcut-party-done")?"done · view card":"7 prompts"}</span></div>
-    <div class="d">Pick your team and play the official party set. Everyone gets the same 7 prompts and one try. Your score goes to the team scoreboard automatically.</div>
+    <div class="t">🎂 Birthday party game <span class="pill">${partyPill()}</span></div>
+    <div class="d">Two rounds of 7 prompts. Everyone gets the same prompts and one try per round, and both rounds add up to your team's score automatically.</div>
   </button>
 
   <div class="section-label">Warm-ups</div>
@@ -434,7 +481,7 @@ function home(){
 function start(mode, extra){
   G={mode, i:0, results:[], score:0, stage:"play", tried:0};
   if(mode==="daily"){G.prompts=dailyPrompts();}
-  else if(mode==="party"){G.prompts=PARTY.slice();Object.assign(G,extra);}
+  else if(mode==="party"){Object.assign(G,extra);G.prompts=(G.round===2?PARTY_R2:PARTY).slice();}
   else if(mode==="test"){Object.assign(G,extra);G.prompts=testPrompts(G.run);}
   else if(mode==="endless"){G.prompts=randomPrompts(BANK.length);G.deadline=performance.now()+ENDLESS_START*1000;}
   else if(mode==="versus"){Object.assign(G,extra);}
@@ -446,7 +493,7 @@ function playPrompt(){
   G.stage="play"; G.tried=0;
   const pi=curPrompt();
   if(G.mode!=="endless") G.deadline=performance.now()+PER_PROMPT*1000;
-  const who = G.mode==="versus" ? `${esc(G.players[G.p].name)} · ` : G.mode==="party" ? `${TEAMS[G.team].e} ` : G.mode==="test" ? `🧪 ${TEAMS[G.team].e} ` : "";
+  const who = G.mode==="versus" ? `${esc(G.players[G.p].name)} · ` : G.mode==="party" ? `${TEAMS[G.team].e} R${G.round} · ` : G.mode==="test" ? `🧪 ${TEAMS[G.team].e} ` : "";
   const progress = G.mode==="endless"
     ? `<span>${G.results.length} answered</span>`
     : `<span>${who}${G.i+1} / ${ROUND}</span>`;
@@ -588,10 +635,10 @@ function endGame(){
   cancelAnimationFrame(raf);
   G.stage="done";
   if(G.mode==="party"||G.mode==="test"){
-    const card={team:G.team,name:G.name,score:G.score,grid:gridFor(G.results),run:G.run||0,
+    const card={team:G.team,name:G.name,score:G.score,grid:gridFor(G.results),run:G.run||0,round:G.round||0,
       gems:G.results.filter(r=>r.m&&r.m.tier==="g").length,
       rows:G.results.map(r=>({pi:r.pi,label:r.m?r.m.label:"",tier:r.m?r.m.tier:""}))};
-    if(G.mode==="party") store.set("deepcut-party-done",card); // test runs never lock the phone
+    if(G.mode==="party"){ const P=partyState(); P["r"+G.round]=card; savePartyState(P); } // test runs never lock the phone
     return partyCard(card, G.mode==="test");
   }
   const grid=gridFor(G.results);
@@ -683,25 +730,39 @@ function versusAfter(){
   document.getElementById("rematch").onclick=()=>start("versus",{prompts:randomPrompts(ROUND),p:0,players:[{name:a.name},{name:b.name}]});
 }
 
-/* ---------- Party: join + score card ---------- */
+/* ---------- Party: state, hub, rounds, score cards ---------- */
+// One record per phone: who's playing, plus each finished round's card.
+function partyState(){
+  let P=store.get("deepcut-party");
+  if(!P){ const old=store.get("deepcut-party-done"); P=old?{team:old.team,name:old.name,r1:{...old,round:1}}:{}; }
+  return P;
+}
+function savePartyState(P){store.set("deepcut-party",P);}
+function partyTotal(P){let t=0;for(let r=1;r<=PARTY_ROUNDS;r++) if(P["r"+r]) t+=P["r"+r].score; return t;}
+function partyPill(){
+  const P=partyState(); const done=[1,2].filter(r=>P["r"+r]).length;
+  return done===0?"2 rounds":done===PARTY_ROUNDS?`done · ${partyTotal(P)} pts`:`R1 done · ${partyTotal(P)} pts`;
+}
+let round2Open=false, hubPollT=0;
+async function fetchRound2(){ try{const s=await api("/state"); round2Open=!!s.round2Open;}catch(e){} return round2Open; }
+
 function partyJoin(test){
-  const done=store.get("deepcut-party-done");
-  if(!test && done) return partyCard(done);
+  if(!test){ const P=partyState(); if(P.name) return partyHub(); }
   const me=store.get("deepcut-me")||{};
   let team=Number.isInteger(me.team)?me.team:null, run=null;
   app.innerHTML=`
-  <div class="topbar"><button class="linkbtn" id="quit">← Home</button><span>${test?"🧪 Test run":"🎂 Party round"}</span><span></span></div>
+  <div class="topbar"><button class="linkbtn" id="quit">← Home</button><span>${test?"🧪 Test run":"🎂 Birthday party"}</span><span></span></div>
   ${test?`
   <h2>Test run</h2>
-  <p class="sub">Practice prompts that are <b style="color:var(--ink)">never in the real party round</b>. Play as many times as you like. Everyone testing together should pick the same run.</p>
+  <p class="sub">Practice prompts that are <b style="color:var(--ink)">never in the real party rounds</b>. Play as many times as you like. Everyone testing together should pick the same run. Scores from different runs add up per person, just like Round 1 + Round 2 will.</p>
   <div class="teamgrid">${Array.from({length:TEST_RUNS},(_,k)=>`<button class="teambtn runbtn" data-r="${k+1}" style="--tc:var(--accent)">🧪<span>Run ${k+1}</span></button>`).join("")}</div>
   <div class="section-label" style="margin-top:6px">Your team</div>`:`
   <h2>Pick your team</h2>
-  <p class="sub">Everyone plays the same 7 prompts. You get <b style="color:var(--ink)">one try</b>, so warm up first if you want.</p>`}
+  <p class="sub">You'll play <b style="color:var(--ink)">two rounds</b> for this team, one try each. Both rounds add up.</p>`}
   <div class="teamgrid">${TEAMS.map((t,i)=>`<button class="teambtn team ${team===i?"sel":""}" data-i="${i}" style="--tc:${t.col}">${t.e}<span>${t.n}</span></button>`).join("")}</div>
   <div class="field"><input type="text" id="pname" placeholder="Your name" maxlength="18" autocomplete="off" value="${esc(me.name||"")}"></div>
   <div class="msg" id="msg">&nbsp;</div>
-  <button class="btn wide" id="go">${test?"Start test run":"Dive in"}</button>`;
+  <button class="btn wide" id="go">${test?"Start test run":"Continue"}</button>`;
   document.getElementById("quit").onclick=home;
   app.querySelectorAll(".teambtn.team").forEach(b=>b.onclick=()=>{
     team=+b.dataset.i;
@@ -716,32 +777,79 @@ function partyJoin(test){
     const msg=document.getElementById("msg");
     if(test&&run===null){msg.className="msg bad";msg.textContent="Pick a test run.";return;}
     if(team===null){msg.className="msg bad";msg.textContent="Pick a team first.";return;}
-    if(!name){msg.className="msg bad";msg.textContent="Add your name so the host knows who scored.";return;}
+    if(!name){msg.className="msg bad";msg.textContent="Add your name so the scoreboard knows who scored.";return;}
     store.set("deepcut-me",{team,name});
-    start(test?"test":"party",{team,name,run});
+    if(test) return start("test",{team,name,run});
+    savePartyState({team,name}); partyHub();
   };
 }
+
+function partyHub(){
+  clearTimeout(hubPollT);
+  const P=partyState(); const t=TEAMS[P.team];
+  const r1=P.r1, r2=P.r2;
+  const roundRow=(n,card,locked)=>`
+    <div class="roundrow">
+      <div><div class="rl">Round ${n}</div><div class="rs">${card?`${card.grid}`:locked?"🔒 Opens when the host says go":"7 prompts · 25s each"}</div></div>
+      ${card?`<button class="btn ghost" data-view="${n}">${card.score} pts</button>`
+            :`<button class="btn" data-play="${n}" ${locked?"disabled":""}>${locked?"Locked":"Play"}</button>`}
+    </div>`;
+  const r2Locked=!r2 && (!r1 || !round2Open);
+  app.innerHTML=`
+  <div class="topbar"><button class="linkbtn" id="quit">← Home</button><span>🎂 Birthday party</span><span></span></div>
+  <div class="scorecard" style="--tc:${t.col};padding:18px">
+    <div class="sc-team">${t.e} ${t.n}</div>
+    <div class="sc-name">${esc(P.name)}</div>
+    <div class="big" style="font-size:52px">${partyTotal(P)}</div>
+    <div class="sub" style="margin:0">total points</div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    ${roundRow(1,r1,false)}
+    ${roundRow(2,r2,r2Locked)}
+    ${!r1?`<div class="tmeta" style="margin-top:8px">Finish Round 1 first.</div>`:(!r2&&!round2Open)?`<div class="tmeta" style="margin-top:8px">This page checks automatically, so you can leave it open.</div>`:""}
+  </div>
+  ${r1&&r2?`<p class="sub" style="text-align:center">🎉 You're done! Watch the scoreboard to see where your team lands.</p>`:""}
+  <button class="linkbtn" id="other" style="display:block;margin:10px auto 0;font-size:14px">Someone else playing on this phone?</button>`;
+  document.getElementById("quit").onclick=()=>{clearTimeout(hubPollT);home();};
+  document.getElementById("other").onclick=()=>{clearTimeout(hubPollT);savePartyState({});store.set("deepcut-party-done",null);partyJoin(false);};
+  app.querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>{
+    const n=+b.dataset.play; clearTimeout(hubPollT);
+    start("party",{team:P.team,name:P.name,round:n});
+  });
+  app.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{clearTimeout(hubPollT);partyCard(P["r"+b.dataset.view],false);});
+  // Re-send any card that hasn't reached the scoreboard yet.
+  for(const n of [1,2]) if(P["r"+n]&&!P["r"+n].sent) sendCard(P["r"+n],false,true);
+  // While Round 2 is locked, keep checking whether the host has opened it.
+  if(r1&&!r2&&!round2Open){
+    const tick=async()=>{ if(await fetchRound2()) { partyHub(); return; } hubPollT=setTimeout(tick,5000); };
+    hubPollT=setTimeout(tick,1500);
+  }
+}
+
 function partyCard(c,test){
   const t=TEAMS[c.team];
+  const P=test?null:partyState();
+  const title=test?"🧪 Test run "+c.run:"🎂 Round "+(c.round||1);
   app.innerHTML=`
-  <div class="topbar"><button class="linkbtn" id="quit">← Home</button><span>${test?"🧪 Test run "+c.run:"🎂 Party round"}</span><span></span></div>
+  <div class="topbar"><button class="linkbtn" id="quit">${test?"← Home":"← Party"}</button><span>${title}</span><span></span></div>
   ${test?`<div class="testbanner">🧪 TEST RUN ${c.run} · doesn't count</div>`:""}
   <div class="scorecard" style="--tc:${t.col}">
-    <div class="sc-team">${t.e} ${t.n}</div>
+    <div class="sc-team">${t.e} ${t.n}${test?"":" · Round "+(c.round||1)}</div>
     <div class="sc-name">${esc(c.name)}</div>
     <div class="big">${c.score}</div>
     <div class="grid">${c.grid}</div>
     ${c.gems?`<div style="color:var(--g);font-weight:700;margin-top:4px">${c.gems} 💎 gem${c.gems>1?"s":""} found</div>`:""}
+    ${P&&P.r1&&P.r2?`<div class="sub" style="margin:10px 0 0">Total for both rounds: <b style="color:var(--ink)">${partyTotal(P)}</b></div>`:""}
   </div>
   <div class="sendstat wait" id="sendstat">&nbsp;</div>
   <div class="card">${(c.rows||[]).map(r=>`<div class="res-row"><div class="rq">${esc(BANK[r.pi].q)} · 💎 ${esc(gemOf(r.pi).label)}</div><div>${r.label?esc(r.label):`<span style="color:var(--mute)">—</span>`}</div><div>${r.tier?`<span class="badge ${TIERS[r.tier].cls}">+${TIERS[r.tier].pts}</span>`:`<span class="badge b-x">0</span>`}</div></div>`).join("")}</div>
   ${test?`<button class="btn wide" id="again">Play another test run</button>`
-        :`<button class="linkbtn" id="other" style="display:block;margin:4px auto 0;font-size:14px">Someone else playing on this phone?</button>`}
+        :`<button class="btn wide" id="hub">${(c.round||1)===1&&!(P&&P.r2)?"Back to party · Round 2 next":"Back to party"}</button>`}
   <button class="btn ghost wide" id="endless">Keep playing: Endless (just for fun)</button>`;
-  document.getElementById("quit").onclick=home;
+  document.getElementById("quit").onclick=test?home:partyHub;
   document.getElementById("endless").onclick=()=>start("endless");
   if(test) document.getElementById("again").onclick=()=>partyJoin(true);
-  else document.getElementById("other").onclick=()=>{store.set("deepcut-party-done",null);partyJoin(false);};
+  else document.getElementById("hub").onclick=partyHub;
   sendCard(c,test);
 }
 
@@ -760,9 +868,12 @@ function deviceId(){
   if(!d){d=(Math.random().toString(36).slice(2,10)+Date.now().toString(36)).replace(/[^a-z0-9]/g,"");store.set("deepcut-device",d);}
   return d;
 }
+// One entry per person per round (live) or per run (test); scores across rounds/runs add up.
 function cardBody(c,test){
-  return {board:test?"test":"live", id:(deviceId()+":"+(norm(c.name)||"player")).slice(0,80),
-          team:c.team, name:c.name, score:c.score, gems:c.gems||0, grid:c.grid, run:c.run||0};
+  const who=deviceId()+":"+(norm(c.name)||"player");
+  return test
+    ? {board:"test", id:(who+":t"+(c.run||0)).slice(0,80), team:c.team, name:c.name, score:c.score, gems:c.gems||0, grid:c.grid, run:c.run||0}
+    : {board:"live", id:(who+":r"+(c.round||1)).slice(0,80), team:c.team, name:c.name, score:c.score, gems:c.gems||0, grid:c.grid, run:c.round||1};
 }
 function pendingList(){return store.get("deepcut-pending")||[]}
 function setPending(list){store.set("deepcut-pending",list)}
@@ -772,17 +883,18 @@ async function flushPending(){
   for(const b of list){ try{await api("/scores",{method:"POST",body:b});}catch(e){ if(!e.status||e.status>=500) left.push(b); } }
   setPending(left);
 }
-async function sendCard(c,test){
-  const el=()=>document.getElementById("sendstat");
+async function sendCard(c,test,quiet){
+  const el=()=>quiet?null:document.getElementById("sendstat");
   const show=(cls,html)=>{const e=el(); if(e){e.className="sendstat "+cls; e.innerHTML=html;}};
   const body=cardBody(c,test);
-  if(!test && c.sent){ show("ok",`✅ Your score is on the scoreboard for <b>${esc(TEAMS[c.team].n)}</b>.`); return; }
+  const roundTxt=test?"":` (Round ${c.round||1})`;
+  if(!test && c.sent){ show("ok",`✅ On the scoreboard for <b>${esc(TEAMS[c.team].n)}</b>${roundTxt}.`); return; }
   show("wait","Sending your score to the scoreboard…");
   try{
     await api("/scores",{method:"POST",body});
     setPending(pendingList().filter(b=>!(b.id===body.id&&b.board===body.board)));
-    if(!test){ c.sent=true; store.set("deepcut-party-done",c); }
-    show("ok",`✅ Sent! Your score counts for <b>${esc(TEAMS[c.team].n)}</b>${test?" on the test board":""}.`);
+    if(!test){ c.sent=true; const P=partyState(); if(P["r"+(c.round||1)]){P["r"+(c.round||1)].sent=true; savePartyState(P);} }
+    show("ok",`✅ Sent! Your score counts for <b>${esc(TEAMS[c.team].n)}</b>${test?" on the test board":roundTxt}.`);
   }catch(e){
     if(!e.status||e.status>=500){ setPending(pendingList().filter(b=>!(b.id===body.id&&b.board===body.board)).concat([body])); }
     show("bad",`Couldn't reach the scoreboard${e.status&&e.status<500?" ("+esc(e.message)+")":""}. <button class="btn ghost" id="retry" style="padding:8px 12px;font-size:14px;margin-left:6px">Try again</button>`);
@@ -793,7 +905,7 @@ async function sendCard(c,test){
 /* ---------- Scoreboard (updates itself every few seconds) ---------- */
 let boardMode=store.get("deepcut-board-mode")==="test"?"test":"live";
 let BD={entries:[],names:TEAMS.map(t=>t.n)}, bdKey="", pollT=0, bdState="loading";
-let hostOn=false, hostTeam=null, resetArmed=false, renaming=false;
+let hostOn=false, hostTeam=null, hostRound=1, resetArmed=false, renaming=false;
 function onBoard(){return location.hash==="#scoreboard"}
 function teamName(i){return (BD.names&&BD.names[i])||TEAMS[i].n}
 
@@ -822,12 +934,13 @@ function renderBoard(){
   }
   poll();
 }
+let lastR2=null;
 async function poll(){
   clearTimeout(pollT);
   if(!onBoard()) return;
   const mode=boardMode;
   try{
-    const d=await api("/scores?board="+mode);
+    const [d]=await Promise.all([api("/scores?board="+mode), mode==="live"?fetchRound2().then(o=>{ if(o!==lastR2){ lastR2=o; if(hostOn) paintHost(); } }):null]);
     if(mode!==boardMode||!onBoard()) return;
     bdState="ok";
     const k=JSON.stringify(d);
@@ -845,24 +958,34 @@ function setBoardStatus(){
   s.className="livedot "+bdState;
   s.textContent= bdState==="ok"?"● Live":bdState==="loading"?"Loading…":"⚠ Reconnecting";
 }
+function teamStats(){
+  return TEAMS.map((t,i)=>{
+    const es=BD.entries.filter(e=>e.team===i);
+    const players={};
+    for(const e of es){ const k=e.name.trim().toLowerCase(); (players[k]=players[k]||{name:e.name,total:0}).total+=(+e.score||0); }
+    const plist=Object.values(players);
+    const total=es.reduce((s,e)=>s+(+e.score||0),0);
+    const byRound={}; for(const e of es){ const r=e.run||0; byRound[r]=(byRound[r]||0)+(+e.score||0); }
+    return {i,t,es,plist,total,byRound,avg:plist.length?Math.round(total/plist.length):0};
+  }).sort((a,b)=>b.total-a.total||b.avg-a.avg||a.i-b.i);
+}
 function paintBoard(){
   const lb=document.getElementById("lb"); if(!lb) return;
-  const test=boardMode==="test";
-  const teams=TEAMS.map((t,i)=>{
-    const es=BD.entries.filter(e=>e.team===i);
-    const total=es.reduce((s,e)=>s+(+e.score||0),0);
-    return {i,t,es,total,avg:es.length?Math.round(total/es.length):0};
-  }).sort((a,b)=>b.total-a.total||b.avg-a.avg||a.i-b.i);
+  const test=boardMode==="test", live=!test;
+  const teams=teamStats();
   const group=BD.entries.reduce((s,e)=>s+(+e.score||0),0);
   const lead=Math.max(1,...teams.map(x=>x.total));
-  const mvp=BD.entries.slice().sort((a,b)=>b.score-a.score)[0];
+  const allPlayers=teams.flatMap(x=>x.plist);
+  const mvp=allPlayers.slice().sort((a,b)=>b.total-a.total)[0];
   const gems=BD.entries.reduce((s,e)=>s+(+e.gems||0),0);
+  const r1n=BD.entries.filter(e=>(e.run||0)===1).length, r2n=BD.entries.filter(e=>(e.run||0)===2).length;
   const medals=["🥇","🥈","🥉","4","5","6"];
+  const split=x=>live?` · R1 ${x.byRound[1]||0} · R2 ${x.byRound[2]||0}`:"";
   lb.innerHTML=`
   <div class="stage">
-    <p class="sub" style="margin:0">${test?"Test group total":"Group total"}</p>
+    <p class="sub" style="margin:0">${test?"Test group total":"Group total · both rounds"}</p>
     <div class="big">${group.toLocaleString()}</div>
-    <p class="sub" style="margin:0 0 14px">${BD.entries.length} of ${TEAMS.length*TEAM_SIZE} players in${gems?` · ${gems} 💎 found`:""}${mvp?` · MVP: <b style="color:var(--ink)">${esc(mvp.name)}</b> (${mvp.score})`:""}</p>
+    <p class="sub" style="margin:0 0 14px">${live?`Round 1: ${r1n}/${TEAMS.length*TEAM_SIZE} in · Round 2: ${r2n}/${TEAMS.length*TEAM_SIZE} in`:`${allPlayers.length} player${allPlayers.length===1?"":"s"} in`}${gems?` · ${gems} 💎`:""}${mvp?`<br>MVP: <b style="color:var(--ink)">${esc(mvp.name)}</b> (${mvp.total})`:""}</p>
   </div>
   <div class="card" style="padding:8px 16px">
     ${teams.map((x,rank)=>`
@@ -873,7 +996,7 @@ function paintBoard(){
             <b>${x.t.e} ${esc(teamName(x.i))}</b><b style="font-size:20px">${x.total}</b>
           </div>
           <div class="bar"><div style="width:${Math.round(x.total/lead*100)}%;background:${x.t.col}"></div></div>
-          <div class="tmeta">${x.es.length}/${TEAM_SIZE} played${x.es.length?` · avg ${x.avg} · ${x.es.map(e=>esc(e.name)).join(", ")}`:""}</div>
+          <div class="tmeta">${x.plist.length}/${TEAM_SIZE} players${x.plist.length?split(x):""}${x.plist.length?`<br>${x.plist.sort((a,b)=>b.total-a.total).map(p=>`${esc(p.name)} ${p.total}`).join(" · ")}`:""}</div>
         </div>
       </div>`).join("")}
   </div>`;
@@ -902,12 +1025,19 @@ function paintHost(){
     return;
   }
   h.innerHTML=`
+  ${!test?`<div class="card r2card ${round2Open?"open":""}">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+      <div><b>Round 2 is ${round2Open?"OPEN":"locked"}</b><div class="tmeta" style="margin-top:3px">${round2Open?"Players can start Round 2 now.":"Players who finish Round 1 wait until you open it."}</div></div>
+      <button class="btn ${round2Open?"ghost":""}" id="r2btn">${round2Open?"Lock again":"Open Round 2"}</button>
+    </div>
+  </div>`:""}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
       <b>Add a score by hand${test?" (test)":""}</b>
       <button class="linkbtn" id="lock">Lock host controls</button>
     </div>
     <div class="teamgrid small" id="hteams"></div>
+    ${!test?`<div class="seg" style="margin:0 0 4px"><button type="button" data-r="1" class="${hostRound===1?"on":""}">Round 1</button><button type="button" data-r="2" class="${hostRound===2?"on":""}">Round 2</button></div>`:""}
     <form id="addf" class="field" autocomplete="off">
       <input type="text" id="hname" placeholder="Name" maxlength="18">
       <input type="text" id="hscore" placeholder="Score" inputmode="numeric" style="max-width:100px">
@@ -925,6 +1055,13 @@ function paintHost(){
   <button class="btn ghost wide" id="reset"></button>
   <div class="foot">Scores save to your Cloudflare database. Any screen with this page open updates by itself.</div>`;
   paintTeamButtons(); paintEntries(); paintRename(); paintReset();
+  app.querySelectorAll("#hostarea .seg button").forEach(b=>b.onclick=()=>{hostRound=+b.dataset.r;app.querySelectorAll("#hostarea .seg button").forEach(x=>x.classList.toggle("on",x===b));});
+  const r2b=document.getElementById("r2btn");
+  if(r2b) r2b.onclick=async()=>{
+    try{const d=await api("/host/round2",{method:"POST",host:true,body:{open:!round2Open}}); round2Open=!!d.round2Open; paintHost();
+        toast(round2Open?"Round 2 is open!":"Round 2 locked", round2Open?"var(--u)":"var(--mute)");}
+    catch(e){toast(e.message,"var(--bad)");}
+  };
   document.getElementById("lock").onclick=()=>{store.set("deepcut-pin",null);hostOn=false;paintHost();};
   document.getElementById("ren").onclick=()=>{renaming=!renaming;paintRename();document.getElementById("ren").textContent=renaming?"Cancel":"Rename";};
   document.getElementById("addf").onsubmit=async e=>{
@@ -936,15 +1073,17 @@ function paintHost(){
     if(!name){msg.className="msg bad";msg.textContent="Add the player's name.";return;}
     if(!Number.isFinite(score)||score<0||score>ROUND*100){msg.className="msg bad";msg.textContent=`Score should be between 0 and ${ROUND*100}.`;return;}
     try{
-      await api("/host/entry",{method:"POST",host:true,body:{board:boardMode,team:hostTeam,name,score}});
+      await api("/host/entry",{method:"POST",host:true,body:{board:boardMode,team:hostTeam,name,score,run:boardMode==="live"?hostRound:0}});
       document.getElementById("hname").value=""; document.getElementById("hscore").value="";
-      msg.className="msg"; msg.textContent=`Added ${name} (${score}) to ${teamName(hostTeam)}.`;
+      msg.className="msg"; msg.textContent=`Added ${name} (${score}) to ${teamName(hostTeam)}${boardMode==="live"?", Round "+hostRound:""}.`;
       poll();
     }catch(err){msg.className="msg bad";msg.textContent=err.message;}
   };
   document.getElementById("reset").onclick=async()=>{
     if(!resetArmed){resetArmed=true;paintReset();return;}
-    try{await api("/host/reset",{method:"POST",host:true,body:{board:boardMode}});}catch(e){toast(e.message,"var(--bad)");}
+    try{await api("/host/reset",{method:"POST",host:true,body:{board:boardMode}});
+        if(boardMode==="live"){const d=await api("/host/round2",{method:"POST",host:true,body:{open:false}}); round2Open=!!d.round2Open; paintHost();}}
+    catch(e){toast(e.message,"var(--bad)");}
     resetArmed=false; paintReset(); poll();
   };
 }
@@ -961,7 +1100,7 @@ function paintEntries(){
   const c=document.getElementById("entries"); if(!c) return;
   if(!BD.entries.length){c.innerHTML=`<b>Entries</b><div class="sub" style="margin:8px 0 0;font-size:14px">No scores yet. They'll appear here as players finish.</div>`;return;}
   c.innerHTML=`<b>Entries</b>`+BD.entries.slice().reverse().map(e=>`
-    <div class="entry"><span>${TEAMS[e.team]?TEAMS[e.team].e:""} ${esc(e.name)}${e.manual?' <span class="pill">by hand</span>':""}${e.run?` <span class="pill">run ${e.run}</span>`:""}</span>
+    <div class="entry"><span>${TEAMS[e.team]?TEAMS[e.team].e:""} ${esc(e.name)}${e.manual?' <span class="pill">by hand</span>':""}${e.run?` <span class="pill">${boardMode==="live"?"R"+e.run:"run "+e.run}</span>`:""}</span>
     <span><b>${e.score}</b> <button class="x" data-id="${esc(e.id)}" title="Remove">✕</button></span></div>`).join("");
   c.querySelectorAll(".x").forEach(b=>b.onclick=async()=>{
     try{await api("/host/delete",{method:"POST",host:true,body:{board:boardMode,id:b.dataset.id}}); poll();}
@@ -990,7 +1129,7 @@ function paintReset(){
    this phone (e.g. if someone tapped the real round by accident during testing). */
 function route(){
   if(location.hash==="#unlock-party"){
-    try{localStorage.removeItem("deepcut-party-done");}catch(e){}
+    try{localStorage.removeItem("deepcut-party-done");localStorage.removeItem("deepcut-party");}catch(e){}
     history.replaceState(null,"",location.pathname+location.search);
     home(); toast("Party round unlocked on this phone","var(--u)"); return;
   }
@@ -999,6 +1138,7 @@ function route(){
 window.addEventListener("hashchange",route);
 route();
 flushPending();
+fetchRound2();
 </script>
 </body>
 </html>

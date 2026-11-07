@@ -4,7 +4,8 @@
 //   GET  /api/scores?board=live|test   -> { entries, names }      (anyone: scoreboard)
 //   POST /api/scores                    -> save a player's card    (anyone: automatic from the game)
 //   GET  /api/host/check                -> verify host PIN
-//   POST /api/host/entry | delete | reset | names                  (host PIN required)
+//   GET  /api/state                     -> { round2Open }
+//   POST /api/host/entry | delete | reset | names | round2         (host PIN required)
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS scores (
@@ -25,7 +26,7 @@ const TEAMS = 6;
 const MAX_SCORE = 700; // 7 prompts x 100
 const json = (d, status = 200) =>
   new Response(JSON.stringify(d), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
-const cleanName = (n) => String(n || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, 18);
+const cleanName = (n, max = 18) => String(n || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, max);
 const validScore = (s) => Number.isInteger(s) && s >= 0 && s <= MAX_SCORE;
 const validTeam = (t) => Number.isInteger(t) && t >= 0 && t < TEAMS;
 
@@ -38,10 +39,16 @@ async function handleApi(request, env, path) {
   const method = request.method;
   let body = {};
   if (method === "POST") {
-    try { body = await request.json(); } catch { return json({ error: "Bad request" }, 400); }
+    try { body = (await request.json()) || {}; } catch { return json({ error: "Bad request" }, 400); }
   }
   const boardIn = body.board || url.searchParams.get("board");
   const board = BOARDS.includes(boardIn) ? boardIn : null;
+
+  // ----- Public: game state (is Round 2 open?) -----
+  if (path === "state" && method === "GET") {
+    const s = await db.prepare("SELECT v FROM settings WHERE k = 'round2open'").first();
+    return json({ round2Open: !!(s && s.v === "1") });
+  }
 
   // ----- Public: read a board -----
   if (path === "scores" && method === "GET") {
@@ -76,15 +83,24 @@ async function handleApi(request, env, path) {
     const action = path.slice(5);
 
     if (action === "check") return json({ ok: true });
-    if (method !== "POST" || !board) return json({ error: "Bad request" }, 400);
+    if (method !== "POST") return json({ error: "Bad request" }, 400);
+
+    if (action === "round2") {
+      const open = !!body.open;
+      await db.prepare("INSERT INTO settings (k, v) VALUES ('round2open', ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v")
+        .bind(open ? "1" : "0").run();
+      return json({ ok: true, round2Open: open });
+    }
+    if (!board) return json({ error: "Bad request" }, 400);
 
     if (action === "entry") {
       const name = cleanName(body.name);
       if (!name || !validTeam(body.team) || !validScore(body.score)) return json({ error: "Invalid entry" }, 400);
       const id = "manual:" + crypto.randomUUID().slice(0, 8);
+      const run = Math.max(0, Math.min(9, body.run | 0));
       await db.prepare(
-        "INSERT INTO scores (board, id, team, name, score, gems, grid, run, manual, updated_at) VALUES (?, ?, ?, ?, ?, 0, '', 0, 1, ?)"
-      ).bind(board, id, body.team, name, body.score, Date.now()).run();
+        "INSERT INTO scores (board, id, team, name, score, gems, grid, run, manual, updated_at) VALUES (?, ?, ?, ?, ?, 0, '', ?, 1, ?)"
+      ).bind(board, id, body.team, name, body.score, run, Date.now()).run();
       return json({ ok: true, id });
     }
     if (action === "delete") {
@@ -97,7 +113,7 @@ async function handleApi(request, env, path) {
     }
     if (action === "names") {
       if (!Array.isArray(body.names) || body.names.length !== TEAMS) return json({ error: "Need 6 names" }, 400);
-      const names = body.names.map((n, i) => cleanName(n).slice(0, 20) || `Team ${i + 1}`);
+      const names = body.names.map((n, i) => cleanName(n, 20) || `Team ${i + 1}`);
       await db.prepare("INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v")
         .bind("names:" + board, JSON.stringify(names)).run();
       return json({ ok: true, names });
