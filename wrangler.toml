@@ -10,4 +10,4 @@ HOST_PIN = "1234"
 binding = "DB"
 database_name = "deep-cut-party"
 # Paste the database_id printed by `npx wrangler d1 create deep-cut-party` here:
-database_id = "PASTE-DATABASE-ID-HERE"
+database_id = "634f4f69-4552-437e-85d5-5004d91272b0"
