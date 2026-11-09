@@ -24,7 +24,7 @@ function ensureSchema(db) {
 const BOARDS = ["live", "test"];
 const TEAMS = 6;
 const MAX_SCORE = 700; // 7 prompts x 100 (per round)
-const PARTY_ROUNDS = 5;
+const PARTY_ROUNDS = 6;
 const json = (d, status = 200) =>
   new Response(JSON.stringify(d), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 const cleanName = (n, max = 18) => String(n || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, max);
