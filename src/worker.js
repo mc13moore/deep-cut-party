@@ -4,8 +4,8 @@
 //   GET  /api/scores?board=live|test   -> { entries, names }      (anyone: scoreboard)
 //   POST /api/scores                    -> save a player's card    (anyone: automatic from the game)
 //   GET  /api/host/check                -> verify host PIN
-//   GET  /api/state                     -> { round2Open, answersOpen }
-//   POST /api/host/entry | delete | reset | names | round2 | answers   (host PIN required)
+//   GET  /api/state                     -> { openRound, round2Open, answersOpen }
+//   POST /api/host/entry | delete | reset | names | rounds | round2 | answers   (host PIN required)
 
 const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS scores (
@@ -23,12 +23,16 @@ function ensureSchema(db) {
 
 const BOARDS = ["live", "test"];
 const TEAMS = 6;
-const MAX_SCORE = 700; // 7 prompts x 100
+const MAX_SCORE = 700; // 7 prompts x 100 (per round)
+const PARTY_ROUNDS = 4;
 const json = (d, status = 200) =>
   new Response(JSON.stringify(d), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 const cleanName = (n, max = 18) => String(n || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, max);
 const validScore = (s) => Number.isInteger(s) && s >= 0 && s <= MAX_SCORE;
 const validTeam = (t) => Number.isInteger(t) && t >= 0 && t < TEAMS;
+const clampRound = (n) => Math.max(1, Math.min(PARTY_ROUNDS, Number.isFinite(n) ? Math.trunc(n) : 1));
+const setSetting = (db, k, v) =>
+  db.prepare("INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v").bind(k, v).run();
 
 async function handleApi(request, env, path) {
   const db = env.DB;
@@ -44,11 +48,12 @@ async function handleApi(request, env, path) {
   const boardIn = body.board || url.searchParams.get("board");
   const board = BOARDS.includes(boardIn) ? boardIn : null;
 
-  // ----- Public: game state (is Round 2 open? are party answers revealed?) -----
+  // ----- Public: game state (which rounds are open? are party answers revealed?) -----
   if (path === "state" && method === "GET") {
-    const { results } = await db.prepare("SELECT k, v FROM settings WHERE k IN ('round2open', 'answersopen')").all();
-    const on = (k) => results.some((r) => r.k === k && r.v === "1");
-    return json({ round2Open: on("round2open"), answersOpen: on("answersopen") });
+    const { results } = await db.prepare("SELECT k, v FROM settings WHERE k IN ('openround', 'round2open', 'answersopen')").all();
+    const get = (k) => (results.find((r) => r.k === k) || {}).v;
+    const openRound = clampRound(get("openround") !== undefined ? +get("openround") : get("round2open") === "1" ? 2 : 1);
+    return json({ openRound, round2Open: openRound >= 2, answersOpen: get("answersopen") === "1" });
   }
 
   // ----- Public: read a board -----
@@ -86,13 +91,17 @@ async function handleApi(request, env, path) {
     if (action === "check") return json({ ok: true });
     if (method !== "POST") return json({ error: "Bad request" }, 400);
 
-    // Party switches: open Round 2, reveal the party answers.
-    const FLAGS = { round2: ["round2open", "round2Open"], answers: ["answersopen", "answersOpen"] };
-    if (FLAGS[action]) {
-      const [k, out] = FLAGS[action], open = !!body.open;
-      await db.prepare("INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v")
-        .bind(k, open ? "1" : "0").run();
-      return json({ ok: true, [out]: open });
+    // Party switches: open rounds up to N, reveal the party answers.
+    // "round2" is kept so a phone still running the older page can open/lock Round 2.
+    if (action === "rounds" || action === "round2") {
+      const openRound = clampRound(action === "rounds" ? body.openRound | 0 : body.open ? 2 : 1);
+      await setSetting(db, "openround", String(openRound));
+      return json({ ok: true, openRound, round2Open: openRound >= 2 });
+    }
+    if (action === "answers") {
+      const open = !!body.open;
+      await setSetting(db, "answersopen", open ? "1" : "0");
+      return json({ ok: true, answersOpen: open });
     }
     if (!board) return json({ error: "Bad request" }, 400);
 
@@ -117,8 +126,7 @@ async function handleApi(request, env, path) {
     if (action === "names") {
       if (!Array.isArray(body.names) || body.names.length !== TEAMS) return json({ error: "Need 6 names" }, 400);
       const names = body.names.map((n, i) => cleanName(n, 20) || `Team ${i + 1}`);
-      await db.prepare("INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = excluded.v")
-        .bind("names:" + board, JSON.stringify(names)).run();
+      await setSetting(db, "names:" + board, JSON.stringify(names));
       return json({ ok: true, names });
     }
   }
